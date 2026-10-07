@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>كتاب قطع الحاسوب</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --w:min(44vw,340px); --h:calc(var(--w)*1.4);
+  --ink:#3b3760; --lav:#b9a9ec; --mint:#a8e0cc; --peach:#ffcdb8; --sky:#bfe0f5; --paper:#fffaf3;
+  --fs:clamp(9px,calc(var(--w)*.046),16px);
+}
+*{box-sizing:border-box;margin:0}
+body{min-height:100vh;font-family:Tajawal,Tahoma,"Segoe UI",sans-serif;color:var(--ink);
+  background:radial-gradient(circle at 20% 15%,#f3ecff 0,transparent 45%),radial-gradient(circle at 85% 85%,#dff5ec 0,transparent 45%),#f6f3fb;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:16px;overflow-x:hidden}
+h1{font-size:clamp(20px,3.4vw,32px);font-weight:800;text-shadow:0 3px 0 #fff,0 6px 10px rgba(120,100,180,.25)}
+.scene{perspective:1800px;width:calc(var(--w)*2);max-width:100%;height:calc(var(--h) + 30px);display:flex;align-items:center;justify-content:center}
+.book{position:relative;width:calc(var(--w)*2);height:var(--h);direction:ltr;transform-style:preserve-3d;
+  transform:rotateX(14deg) translateX(calc(var(--w)*-.5));transition:transform .9s cubic-bezier(.4,.1,.2,1)}
+.book::after{content:"";position:absolute;inset:auto 0 -26px 0;height:26px;background:radial-gradient(ellipse at center,rgba(90,70,150,.3),transparent 70%);transform:translateZ(-1px)}
+.leaf{position:absolute;top:0;right:0;width:var(--w);height:var(--h);transform-origin:left center;transform-style:preserve-3d;
+  transition:transform 1s cubic-bezier(.5,.1,.2,1);cursor:pointer}
+.leaf.flipped{transform:rotateY(-180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;direction:rtl;font-size:var(--fs);
+  padding:1.6em 1.4em;display:flex;flex-direction:column;gap:.7em;overflow:hidden;background:var(--paper)}
+.front{border-radius:.5em 1.4em 1.4em .5em;box-shadow:inset 1.4em 0 1.6em -1em rgba(120,100,170,.22),0 4px 14px rgba(80,60,140,.2);border-left:3px solid #efe6d8}
+.back{transform:rotateY(180deg);border-radius:1.4em .5em .5em 1.4em;box-shadow:inset -1.4em 0 1.6em -1em rgba(120,100,170,.22),0 4px 14px rgba(80,60,140,.2);border-right:3px solid #efe6d8}
+.cover{background:linear-gradient(145deg,#9d8be0,#7fc9b0);color:#fff;align-items:center;justify-content:center;text-align:center;border-left:0}
+.cover h2{font-size:2em;text-shadow:0 3px 0 rgba(60,50,110,.35)} .cover p{opacity:.95}
+.cover .big{font-size:6em;filter:drop-shadow(0 .15em .1em rgba(50,40,100,.35));animation:float 3.5s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-.15em) rotate(-4deg)}}
+.icon{align-self:center;width:5.2em;height:5.2em;border-radius:1.4em;display:grid;place-items:center;font-size:2.6em;
+  transform:perspective(300px) rotateX(18deg) rotateY(-14deg);box-shadow:.25em .5em 0 rgba(60,50,110,.18),.5em 1em 1.2em rgba(60,50,110,.2)}
+.face h3{font-size:1.6em;text-align:center;line-height:1.2} .face h3 small{display:block;font-size:.55em;opacity:.65;font-weight:400;direction:ltr}
+.face ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:.5em}
+.face li{background:#fff;border-radius:.8em;padding:.5em .8em;box-shadow:0 .2em 0 rgba(120,100,180,.15);line-height:1.5}
+.tip{margin-top:auto;border-radius:.9em;padding:.6em .8em;background:var(--peach);box-shadow:0 .25em 0 #f0ab8d;line-height:1.5}
+.pn{position:absolute;bottom:.7em;left:0;right:0;text-align:center;font-size:.8em;opacity:.55}
+.btn{font:inherit;font-weight:700;color:var(--ink);background:var(--mint);border:0;border-radius:14px;padding:11px 22px;cursor:pointer;
+  box-shadow:0 5px 0 #7bbfa6;transition:transform .12s,box-shadow .12s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #7bbfa6}
+.btn:focus-visible,.opt:focus-visible{outline:3px solid var(--lav);outline-offset:3px}
+.btn.lav{background:var(--lav);box-shadow:0 5px 0 #8e7cc9}.btn.lav:active{box-shadow:0 1px 0 #8e7cc9}
+.btn:disabled{opacity:.4;cursor:default}
+.nav{display:flex;align-items:center;gap:16px}
+#ind{min-width:110px;text-align:center;font-weight:700}
+#quiz{position:fixed;inset:0;background:rgba(246,243,251,.82);backdrop-filter:blur(8px);display:none;place-items:center;padding:16px;z-index:50;perspective:1200px}
+#quiz.on{display:grid}
+.card{width:min(560px,100%);background:#fff;border-radius:28px;padding:28px;box-shadow:0 10px 0 #d9d0f0,0 30px 50px rgba(80,60,140,.25);
+  transform:rotateX(6deg);animation:pop .5s ease-out}
+@keyframes pop{from{transform:rotateX(35deg) translateY(40px);opacity:0}}
+.bar{height:12px;border-radius:9px;background:#ece7f8;overflow:hidden;margin-bottom:18px;box-shadow:inset 0 2px 3px rgba(0,0,0,.1)}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--lav),var(--mint));transition:width .4s}
+.card h2{font-size:1.35rem;line-height:1.6;margin-bottom:16px}
+.opt{display:block;width:100%;font:inherit;text-align:right;color:var(--ink);background:var(--sky);border:0;border-radius:16px;padding:13px 16px;margin-bottom:12px;cursor:pointer;
+  box-shadow:0 5px 0 #92c1de;transition:transform .12s,box-shadow .12s}
+.opt:hover:not(:disabled){transform:translateY(-2px)} .opt:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 #92c1de}
+.opt.ok{background:#b8ecd2;box-shadow:0 5px 0 #7cc9a1}.opt.no{background:#ffd2d2;box-shadow:0 5px 0 #e8a0a0}
+.fb{min-height:1.8em;font-weight:700;margin:4px 0 12px}
+.res{text-align:center}.res .st{font-size:3rem;margin:10px 0}.res .sc{font-size:2.4rem;font-weight:800}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}}
+@media (max-width:600px){:root{--w:46vw}}
+</style>
+</head>
+<body>
+<h1>📖 كتاب قطع الحاسوب</h1>
+<div class="scene"><div class="book" id="book"></div></div>
+<div class="nav">
+  <button class="btn" id="prev">→ السابق</button>
+  <span id="ind"></span>
+  <button class="btn" id="next">التالي ←</button>
+</div>
+
+<div id="quiz"><div class="card" id="qcard"></div></div>
+
+<script>
+/* ===== محتوى الصفحات الست ===== */
+const topics=[
+ {i:'🧠',c:'#d6cbf7',t:'المعالج',e:'CPU',f:['هو عقل الحاسوب، ينفّذ الأوامر ويحسب كل شيء.','تُقاس سرعته بالجيجاهرتز (GHz).','يتكوّن من أنوية؛ كلما زادت زادت قدرته على تنفيذ مهام معًا.'],tip:'💡 يسخن المعالج كثيرًا، لذلك نضع فوقه مروحة تبريد.'},
+ {i:'⚡',c:'#bfe8d8',t:'الذاكرة العشوائية',e:'RAM',f:['ذاكرة مؤقتة سريعة تحفظ البرامج المفتوحة حاليًا.','تُقاس بالجيجابايت (GB).','تُمسح محتوياتها عند إطفاء الجهاز.'],tip:'💡 كلما زادت الرام فتحت برامج أكثر دون بطء.'},
+ {i:'🧩',c:'#ffd9c7',t:'اللوحة الأم',e:'Motherboard',f:['اللوحة الكبيرة التي تُركَّب عليها كل القطع.','تربط المعالج والذاكرة والأقراص بعضها ببعض.','فيها منافذ USB والصوت والشبكة.'],tip:'💡 تشبه الطرق التي تنقل البيانات بين أجزاء المدينة.'},
+ {i:'💾',c:'#c7e4f7',t:'وحدة التخزين',e:'HDD / SSD',f:['تحفظ ملفاتك وصورك وبرامجك حتى بعد إطفاء الجهاز.','القرص HDD يدور ميكانيكيًا وهو أرخص.','القرص SSD بلا أجزاء متحركة وأسرع بكثير.'],tip:'💡 SSD يشغّل الحاسوب في ثوانٍ قليلة.'},
+ {i:'🎮',c:'#e6d3f5',t:'كرت الشاشة',e:'GPU',f:['يعالج الصور والفيديو والألعاب ويرسمها على الشاشة.','يحتوي على ذاكرة خاصة به تسمى VRAM.','مهم للتصميم والرسم ثلاثي الأبعاد.'],tip:'💡 بعض المعالجات فيها كرت شاشة مدمج للاستخدام البسيط.'},
+ {i:'🔌',c:'#fff0b8',t:'مزوّد الطاقة',e:'Power Supply',f:['يحوّل كهرباء الجدار إلى جهد مناسب للقطع.','تُقاس قدرته بالواط (W).','يوزّع الكهرباء على اللوحة الأم والكرت والأقراص.'],tip:'💡 اختر مزوّدًا بقدرة أعلى قليلًا من حاجة جهازك.'}
+];
+/* ===== أسئلة المسابقة ===== */
+const qs=[
+ {q:'أي قطعة تُسمّى «عقل الحاسوب»؟',o:['المعالج CPU','مزوّد الطاقة','القرص HDD','المروحة'],a:0},
+ {q:'ماذا يحدث لمحتويات الرام عند إطفاء الجهاز؟',o:['تبقى محفوظة','تُمسح','تنتقل إلى الشاشة','تتضاعف'],a:1},
+ {q:'ما القطعة التي تربط جميع أجزاء الحاسوب معًا؟',o:['كرت الشاشة','الذاكرة العشوائية','اللوحة الأم','الفأرة'],a:2},
+ {q:'أي وحدة تخزين أسرع وبلا أجزاء متحركة؟',o:['HDD','SSD','RAM فقط','قرص مرن'],a:1},
+ {q:'ما وظيفة كرت الشاشة GPU؟',o:['تبريد الجهاز','توليد الكهرباء','معالجة الصور والفيديو','حفظ كلمات المرور'],a:2},
+ {q:'بأي وحدة تُقاس قدرة مزوّد الطاقة؟',o:['واط (W)','جيجاهرتز','بكسل','بايت'],a:0}
+];
+
+/* ===== بناء الكتاب: 4 أوراق = 8 وجوه (غلاف + 6 صفحات + صفحة المسابقة) ===== */
+const faces=[
+ `<div class="face front cover"><div class="big">💻</div><h2>رحلة داخل الحاسوب</h2><p>تعرّفي على القطع الست<br>ثم اختبري معلوماتك</p><p style="margin-top:1em">اضغطي لتقليب الصفحة ←</p></div>`,
+ ...topics.map((p,n)=>`<div class="face FS"><div class="icon" style="background:${p.c}">${p.i}</div>
+   <h3>${p.t}<small>${p.e}</small></h3><ul>${p.f.map(x=>`<li>${x}</li>`).join('')}</ul><div class="tip">${p.tip}</div><div class="pn">${n+1} / 6</div></div>`),
+ `<div class="face FS cover" style="background:linear-gradient(145deg,#7fc9b0,#9d8be0)"><div class="big">🏆</div><h2>هل أنتِ جاهزة؟</h2><p>٦ أسئلة عن القطع التي تعلّمتِها</p><button class="btn lav" id="start" style="margin-top:1em">ابدئي المسابقة</button></div>`
+];
+const book=document.getElementById('book'),N=4;let p=0;
+for(let i=0;i<N;i++){
+  const l=document.createElement('div');l.className='leaf';l.dataset.i=i;
+  l.innerHTML=faces[2*i].replace('FS','front')+faces[2*i+1].replace('FS','back').replace('face front','face back');
+  l.innerHTML=l.innerHTML.replace(/class="face front"/,'class="face front"');
+  l.onclick=()=>{ if(i<p) go(-1); else go(1); };
+  book.appendChild(l);
+}
+/* تصحيح أصناف الوجوه */
+book.querySelectorAll('.face').forEach((f,k)=>{f.classList.remove('front','back');f.classList.add(k%2?'back':'front');});
+function go(d){const n=p+d;if(n<0||n>N)return;p=n;render();}
+function render(){
+  book.querySelectorAll('.leaf').forEach((l,i)=>{l.classList.toggle('flipped',i<p);l.style.zIndex=i<p?i+1:20-i;});
+  const x=p===0?-.5:p===N?.5:0;
+  book.style.transform=`rotateX(14deg) translateX(calc(var(--w)*${x}))`;
+  const pg=p===0?'الغلاف':p>=N?'المسابقة':`الصفحات ${p*2-1}–${p*2}`;
+  document.getElementById('ind').textContent=pg;
+  document.getElementById('prev').disabled=p===0;document.getElementById('next').disabled=p===N;
+}
+prev.onclick=()=>go(-1);next.onclick=()=>go(1);
+addEventListener('keydown',e=>{if(quiz.classList.contains('on'))return;if(e.key==='ArrowLeft')go(1);if(e.key==='ArrowRight')go(-1);});
+render();
+
+/* ===== المسابقة ===== */
+const quiz=document.getElementById('quiz'),card=document.getElementById('qcard');let qi=0,score=0;
+document.addEventListener('click',e=>{if(e.target.id==='start'){e.stopPropagation();openQuiz();}},true);
+function openQuiz(){qi=0;score=0;quiz.classList.add('on');showQ();}
+function showQ(){
+  const q=qs[qi];
+  card.innerHTML=`<div class="bar"><i style="width:${qi/qs.length*100}%"></i></div>
+   <p style="opacity:.6;margin-bottom:6px">السؤال ${qi+1} من ${qs.length}</p><h2>${q.q}</h2>
+   ${q.o.map((o,k)=>`<button class="opt" data-k="${k}">${o}</button>`).join('')}
+   <div class="fb" id="fb"></div><div class="row" style="margin:0"><button class="btn lav" id="nx" style="display:none">${qi===qs.length-1?'عرض النتيجة':'السؤال التالي'}</button></div>`;
+  card.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.k));
+}
+function answer(k){
+  const q=qs[qi],bs=card.querySelectorAll('.opt');
+  bs.forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add('ok');});
+  if(k===q.a){score++;fb.textContent='🌟 أحسنتِ! إجابة صحيحة';}
+  else{bs[k].classList.add('no');fb.textContent='🌱 لا بأس، الإجابة الصحيحة ظاهرة بالأخضر';}
+  nx.style.display='inline-block';nx.onclick=()=>{qi++;qi<qs.length?showQ():result();};
+}
+function result(){
+  const m=score===qs.length?['🏆','رائع! أنتِ خبيرة قطع الحاسوب']:score>=4?['🌟','ممتاز! معلوماتك قوية']:score>=2?['🌱','جيد، راجعي الصفحات وحاولي مجددًا']:['📖','لا بأس، اقرئي الكتاب ثم أعيدي المحاولة'];
+  card.innerHTML=`<div class="bar"><i style="width:100%"></i></div><div class="res"><div class="st">${m[0]}</div>
+   <div class="sc">${score} / ${qs.length}</div><p style="margin-top:8px;font-size:1.2rem">${m[1]}</p>
+   <div class="row"><button class="btn" id="again">إعادة المسابقة</button><button class="btn lav" id="back">العودة إلى الكتاب</button></div></div>`;
+  again.onclick=openQuiz;back.onclick=()=>{quiz.classList.remove('on');p=1;render();};
+}
+</script>
+</body>
+</html>
